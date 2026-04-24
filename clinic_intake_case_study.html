@@ -475,6 +475,10 @@
             gap: 6px;
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 </head>
 
 <body>
@@ -751,8 +755,9 @@
                     </div>
 
                     <div class="card">
-                        <img src="https://marinia-portfolio-shani-01.s3.us-west-2.amazonaws.com/marketing-automation/clinic-outreach/value-by-stage.png"
-                            alt="Projected Value by Stage" style="width:100%; border-radius:12px;" />
+                        <div style="position:relative; width:100%; height:300px;">
+                            <canvas id="pipelineChart"></canvas>
+                        </div>
                         <p style="margin-top:10px; font-size:13px; color:#8FA3B8;">
                             Estimated revenue contribution across pipeline stages.
                         </p>
@@ -936,6 +941,91 @@
         architectureItems.forEach(item => {
             architectureObserver.observe(item);
         });
+        const ctx = document.getElementById('pipelineChart').getContext('2d');
+
+        const dataValues = [18600, 12200, 9100, 7500];
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Identified', 'Contacted', 'Qualified', 'Proposal'],
+                datasets: [{
+                    label: 'Pipeline Value ($)',
+                    data: [0, 0, 0, 0],
+                    backgroundColor: ['#4DA3FF', '#36D1DC', '#8E6CFF', '#FF9F43'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 20000,
+                        ticks: {
+                            color: '#c7d7e8',
+                            callback: value => '$' + value / 1000 + 'K'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.08)' }
+                    },
+                    x: {
+                        ticks: { color: '#c7d7e8' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        function animateBars(index = 0) {
+            if (index === 0) {
+                // Reset all bars to 0 before starting again
+                chart.data.datasets[0].data = [0, 0, 0, 0];
+                chart.update('none');
+            }
+
+            if (index >= dataValues.length) {
+                // Pause, then restart
+                setTimeout(() => {
+                    animateBars(0);
+                }, 2000); // 👈 pause time (2 seconds)
+                return;
+            }
+
+            let current = 0;
+            const target = dataValues[index];
+
+            const interval = setInterval(() => {
+                current += target / 30;
+
+                if (current >= target) {
+                    current = target;
+                    clearInterval(interval);
+
+                    // Move to next bar
+                    setTimeout(() => animateBars(index + 1), 250);
+                }
+
+                chart.data.datasets[0].data[index] = Math.round(current);
+                chart.update('none');
+            }, 30);
+        }
+
+        let barAnimationStarted = false;
+
+        const chartObserver = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && !barAnimationStarted) {
+                barAnimationStarted = true;
+                animateBars();
+            }
+        }, { threshold: 0.15 });
+
+        chartObserver.observe(document.getElementById('pipelineChart'));
+
     </script>
 </body>
 
