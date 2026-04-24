@@ -39,12 +39,52 @@ This project translates the intake problem into a structured AI + data workflow:
 
 ```mermaid
 flowchart LR
-    A[Patient Intake Form] --> B[AWS S3 Storage]
-    B --> C[Data Validation Layer]
-    C --> D[Apache Airflow DAGs]
-    D --> E[CRM System]
-    D --> F[Analytics Dashboard]
-    D --> G[Notification System]
+
+    %% USER LAYER
+    U[Patient / Clinic Staff<br/>Digital Intake Form]
+
+    %% AWS CLOUD
+    subgraph AWS[AWS Cloud Environment]
+
+        S3[(Amazon S3<br/>Raw Intake Storage)]
+
+        VAL[Data Validation Layer<br/>Cleaning + Structuring]
+
+        ORCH[Apache Airflow DAGs<br/>Workflow Orchestration]
+
+        ANA[Analytics Processing<br/>KPI Computation]
+
+        DASH[Analytics Dashboard<br/>Operational Insights]
+
+        NOTIF[Notification System<br/>Follow-ups + Alerts]
+
+    end
+
+    %% BUSINESS SYSTEMS
+    CRM[HubSpot CRM<br/>Pipeline Management]
+    EHR[EHR / Scheduling System<br/>Future Integration]
+
+    %% DATA FLOW
+    U --> S3
+    S3 --> VAL
+    VAL --> ORCH
+
+    ORCH --> CRM
+    ORCH --> EHR
+    ORCH --> ANA
+    ANA --> DASH
+    ORCH --> NOTIF
+
+    %% STYLING
+    classDef aws fill:#0B1F33,stroke:#23C7E8,stroke-width:2px,color:#ffffff;
+    classDef external fill:#102A3A,stroke:#8FA3B8,stroke-width:1.5px,color:#ffffff;
+    classDef business fill:#132F22,stroke:#39D98A,stroke-width:1.5px,color:#ffffff;
+    classDef analytics fill:#2B1B4F,stroke:#A78BFA,stroke-width:1.5px,color:#ffffff;
+
+    class S3,VAL,ORCH,NOTIF aws;
+    class U external;
+    class CRM,EHR business;
+    class ANA,DASH analytics;
 ```
 ## Key Metrics (From Case Study)
 
