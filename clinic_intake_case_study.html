@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI-Driven Clinic Intake Optimization | Case Study</title>
+    <style>
+        :root {
+            --bg: #08131f;
+            --panel: #0e1d2b;
+            --panel-2: #11283b;
+            --text: #e9f1f7;
+            --muted: #aab9c8;
+            --accent: #23c7e8;
+            --accent-2: #1f7ea7;
+            --border: rgba(255, 255, 255, 0.08);
+            --success: #3ddc97;
+            --shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+            --max: 1180px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(35, 199, 232, 0.14), transparent 22%),
+                linear-gradient(180deg, #07111b 0%, #08131f 100%);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(var(--max), calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .hero {
+            position: relative;
+            padding: 72px 0 48px;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(35, 199, 232, 0.08), transparent 45%),
+                radial-gradient(circle at 15% 20%, rgba(35, 199, 232, 0.12), transparent 20%);
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 8px 14px;
+            border: 1px solid rgba(35, 199, 232, 0.25);
+            border-radius: 999px;
+            background: rgba(35, 199, 232, 0.08);
+            color: #c9f5ff;
+            font-size: 0.84rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 28px;
+            align-items: start;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.7rem);
+            line-height: 1.05;
+            margin: 0 0 14px;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--muted);
+            max-width: 760px;
+            margin: 0 0 24px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(35, 199, 232, 0.18), rgba(35, 199, 232, 0.08));
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+        }
+
+        .btn.secondary {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text);
+            box-shadow: none;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-card h3,
+        .section h2,
+        .panel h3 {
+            margin-top: 0;
+        }
+
+        .meta-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 12px;
+        }
+
+        .meta-list li {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 0.98rem;
+        }
+
+        .meta-list strong {
+            color: var(--text);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 28px 0 8px;
+        }
+
+        .stat {
+            padding: 18px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .stat .value {
+            font-size: clamp(1.5rem, 3vw, 2.15rem);
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
+
+        .stat .label {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        main {
+            padding: 34px 0 56px;
+        }
+
+        .section {
+            margin: 0 0 26px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 18px;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            margin: 0;
+            color: var(--muted);
+            max-width: 740px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 22px;
+        }
+
+        .panel p:last-child,
+        .panel ul:last-child {
+            margin-bottom: 0;
+        }
+
+        .panel ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .panel li+li {
+            margin-top: 8px;
+        }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .tag {
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(35, 199, 232, 0.18);
+            background: rgba(35, 199, 232, 0.07);
+            color: #d3f8ff;
+            font-size: 0.92rem;
+        }
+
+        .architecture {
+            display: grid;
+            gap: 14px;
+        }
+
+        .flow {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+            align-items: stretch;
+        }
+
+        .flow-step {
+            position: relative;
+            background: linear-gradient(180deg, rgba(35, 199, 232, 0.1), rgba(255, 255, 255, 0.03));
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            min-height: 126px;
+        }
+
+        .flow-step .num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(35, 199, 232, 0.18);
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            color: #d4f8ff;
+            margin-bottom: 10px;
+        }
+
+        .flow-step h4 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+        }
+
+        .flow-step p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .flow-step {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s ease, transform 0.7s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .flow-step.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .flow-step:hover {
+            border-color: rgba(35, 199, 232, 0.45);
+            box-shadow: 0 0 28px rgba(35, 199, 232, 0.16);
+            transform: translateY(-4px);
+        }
+
+        .callout {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.8s ease, transform 0.8s ease, box-shadow 0.3s ease;
+        }
+
+        .callout.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .callout:hover {
+            box-shadow: 0 0 24px rgba(35, 199, 232, 0.14);
+        }
+
+        .evidence {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        figure {
+            margin: 0;
+            border-radius: 22px;
+            overflow: hidden;
+            background: var(--panel);
+            border: 1px solid var(--border);
+        }
+
+        figure img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            background: #09111a;
+        }
+
+        figcaption {
+            padding: 14px 16px 18px;
+            color: var(--muted);
+            font-size: 0.95rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .impact-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+        }
+
+        .impact-table th,
+        .impact-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .impact-table th {
+            color: #d7edf8;
+            background: rgba(255, 255, 255, 0.03);
+            font-size: 0.95rem;
+        }
+
+        .impact-table td {
+            color: var(--muted);
+        }
+
+        .impact-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .callout {
+            border-left: 4px solid var(--accent);
+            padding: 16px 18px;
+            background: rgba(35, 199, 232, 0.06);
+            border-radius: 0 16px 16px 0;
+            color: #d6f9ff;
+        }
+
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 26px 0 40px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        code.inline {
+            font-family: Consolas, monospace;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 7px;
+            border-radius: 8px;
+            color: #d4f7ff;
+        }
+
+        @media (max-width: 980px) {
+
+            .hero-grid,
+            .grid-2,
+            .grid-3,
+            .evidence,
+            .flow,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .meta-list li {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+        }
+
+        .brand-strip {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .brand-video {
+            width: 300px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 16px;
+            display: block;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            margin-left: -48px;
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #E6F1FF;
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            color: #7FAFD4;
+        }
+
+        .brand-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="hero">
+        <div class="container">
+
+            <div class="brand-strip">
+
+                <div class="brand-stack">
+
+                    <video class="brand-video" autoplay muted loop playsinline>
+                        <source
+                            src="https://marinia-portfolio-shani-01.s3.us-west-2.amazonaws.com/marketing-automation/clinic-outreach/zoom-out-1.mp4"
+                            type="video/mp4">
+                    </video>
+
+                    <div class="brand-subtitle">
+                        A Marinia Group Company
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="eyebrow">Healthcare AI · Workflow Automation · Case Study</div>
+            <div class="hero-grid">
+                <div>
+                    <h1>AI-Driven Clinic Intake Optimization</h1>
+                    <p class="subtitle">
+                        A portfolio case study showing how a dermatology clinic outreach pipeline was translated into
+                        an AI workflow automation opportunity with measurable operational and financial upside.
+                    </p>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="value count" data-target="31">0</div>
+                            <div class="label">Qualified clinic opportunities tracked in CRM</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value count" data-target="15" data-prefix="$" data-suffix="K">0</div>
+                            <div class="label">Target engagement value per clinic optimization project</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value count" data-target="60" data-prefix="40-" data-suffix="%">0</div>
+                            <div class="label">Estimated reduction in intake processing time</div>
+                        </div>
+                        <div class="stat">
+                            <div class="value count" data-target="20" data-prefix="10-" data-suffix="%">0</div>
+                            <div class="label">Potential increase in patient throughput</div>
+                        </div>
+                    </div>
+
+                    <div class="hero-actions">
+                        <a class="btn" href="https://calendly.com/s-sambrano-elevate-aisolutions" target="_blank"
+                            rel="noopener noreferrer">
+                            Schedule a Strategy Call →
+                        </a>
+                        <a class="btn secondary" href="#evidence">View evidence</a>
+                        <a class="btn secondary" href="#architecture">See architecture</a>
+                    </div>
+                </div>
+
+                <aside class="card summary-card">
+                    <h3>Project summary</h3>
+                    <ul class="meta-list">
+                        <li><strong>Sector</strong><span>Dermatology clinics (Orange County and Los Angeles
+                                focus)</span></li>
+                        <li><strong>Problem</strong><span>Manual intake, front-desk burden, and limited workflow
+                                orchestration</span></li>
+                        <li><strong>Approach</strong><span>CRM pipeline analysis + clinic workflow assessment + AI
+                                automation design</span></li>
+                        <li><strong>Stack</strong><span>HubSpot, AWS S3, ChatGPT, Instagram outreach, conceptual Airflow
+                                architecture</span></li>
+                        <li><strong>Outcome</strong><span>Structured outbound pipeline and reusable consulting framework
+                                for clinic automation</span></li>
+                    </ul>
+                    <div class="tag-row">
+                        <span class="tag">HubSpot CRM</span>
+                        <span class="tag">AWS S3</span>
+                        <span class="tag">Apache Airflow</span>
+                        <span class="tag">Workflow Automation</span>
+                        <span class="tag">Intake Optimization</span>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="section">
+                <div class="section-header">
+                    <div>
+                        <h2>Business problem</h2>
+                        <p>
+                            Many dermatology practices rely on web forms and front-desk staff to collect intake
+                            information,
+                            triage visit reasons, verify insurance, and manage follow-up. That workflow creates
+                            avoidable delays,
+                            repetitive data entry, and limited visibility into operational bottlenecks.
+                        </p>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="panel">
+                        <h3>Observed constraints</h3>
+                        <ul>
+                            <li>Manual intake data capture across multiple fields and steps</li>
+                            <li>Administrative burden on small clinic teams</li>
+                            <li>No orchestration layer connecting intake, scheduling, and follow-up</li>
+                            <li>Limited reporting on time loss, patient throughput, and conversion</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>Why it matters</h3>
+                        <ul>
+                            <li>Longer intake times can reduce capacity and create patient friction</li>
+                            <li>Manual re-entry increases error risk and staff fatigue</li>
+                            <li>Unstructured workflows make scaling difficult for small and growing practices</li>
+                            <li>Without analytics, process improvement becomes guesswork</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <div>
+                        <h2>Opportunity identified</h2>
+                        <p>
+                            The outreach campaign was not treated as generic prospecting. Each clinic was evaluated as a
+                            workflow
+                            modernization opportunity, with CRM notes used to document operational pain points,
+                            estimated business value,
+                            and a proposed automation pathway.
+                        </p>
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div class="panel">
+                        <h3>Intake</h3>
+                        <p>Replace fragmented patient information capture with structured digital forms and pre-visit
+                            workflows.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Operations</h3>
+                        <p>Reduce front-desk workload by automating confirmations, reminders, and intake routing.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Analytics</h3>
+                        <p>Capture operational data for dashboards that support decisions on staffing, throughput, and
+                            process quality.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="architecture">
+                <div class="section-header">
+                    <div>
+                        <h2>Proposed solution architecture</h2>
+                        <p>
+                            A lightweight, integration-ready workflow was proposed to move clinics from manual intake to
+                            a measurable,
+                            automation-friendly operating model.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="panel architecture">
+                    <div class="flow">
+                        <div class="flow-step">
+                            <div class="num">1</div>
+                            <h4>Digital intake capture</h4>
+                            <p>Patient submits structured intake data through web or tablet-based forms.</p>
+                        </div>
+                        <div class="flow-step">
+                            <div class="num">2</div>
+                            <h4>Cloud storage layer</h4>
+                            <p>Form submissions are stored in AWS for secure persistence and downstream processing.</p>
+                        </div>
+                        <div class="flow-step">
+                            <div class="num">3</div>
+                            <h4>Workflow orchestration</h4>
+                            <p>Apache Airflow coordinates validation, routing, notifications, and task sequencing.</p>
+                        </div>
+                        <div class="flow-step">
+                            <div class="num">4</div>
+                            <h4>Downstream integration</h4>
+                            <p>Data can flow into CRM, EHR, scheduling, or reporting systems as the clinic matures.</p>
+                        </div>
+                        <div class="flow-step">
+                            <div class="num">5</div>
+                            <h4>Operational analytics</h4>
+                            <p>Dashboards surface intake efficiency, admin workload, and throughput trends.</p>
+                        </div>
+                    </div>
+
+                    <div class="callout">
+                        <strong>Architectural intent:</strong> create a scalable foundation that improves clinic
+                        operations immediately while
+                        preserving flexibility for future AI automation, analytics, and integration use cases.
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <div>
+                        <h2>Estimated business impact</h2>
+                        <p>
+                            The case study used a conservative small-clinic model to estimate value. The goal was to
+                            show that even a
+                            single-location practice can justify a meaningful workflow automation engagement when intake
+                            inefficiency is addressed.
+                        </p>
+                    </div>
+                </div>
+
+                <table class="impact-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Estimated impact</th>
+                            <th>Business meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Intake processing time</td>
+                            <td>40-60% reduction</td>
+                            <td>Faster patient onboarding and less manual handling by staff</td>
+                        </tr>
+                        <tr>
+                            <td>Administrative workload</td>
+                            <td>10-15 hours/week reduced</td>
+                            <td>More capacity for patient-facing work and fewer repetitive tasks</td>
+                        </tr>
+                        <tr>
+                            <td>Patient throughput</td>
+                            <td>10-20% improvement</td>
+                            <td>Higher scheduling efficiency and more billable appointment capacity</td>
+                        </tr>
+                        <tr>
+                            <td>Monthly cost impact</td>
+                            <td>$1,500-$3,000 estimated savings</td>
+                            <td>Operational savings that support a $10K-$15K project scope</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section class="section" style="margin-top:60px;">
+                <h2>Data insights & analytics</h2>
+                <p>
+                    The following visuals represent estimated pipeline performance, operational improvements,
+                    and financial impact derived from the clinic outreach and workflow analysis.
+                </p>
+
+                <div class="grid-2">
+
+                    <div class="card">
+                        <img src="https://marinia-portfolio-shani-01.s3.us-west-2.amazonaws.com/marketing-automation/clinic-outreach/pipeline-value.png"
+                            alt="Pipeline Value Over Time" style="width:100%; border-radius:12px;" />
+                        <p style="margin-top:10px; font-size:13px; color:#8FA3B8;">
+                            Growth in cumulative pipeline value over a 6-month outreach cycle.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <img src="https://marinia-portfolio-shani-01.s3.us-west-2.amazonaws.com/marketing-automation/clinic-outreach/impact-per-clinic.png"
+                            alt="Estimated Impact Per Clinic" style="width:100%; border-radius:12px;" />
+                        <p style="margin-top:10px; font-size:13px; color:#8FA3B8;">
+                            Operational efficiency gains and cost savings per clinic engagement.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <img src="https://marinia-portfolio-shani-01.s3.us-west-2.amazonaws.com/marketing-automation/clinic-outreach/value-by-stage.png"
+                            alt="Projected Value by Stage" style="width:100%; border-radius:12px;" />
+                        <p style="margin-top:10px; font-size:13px; color:#8FA3B8;">
+                            Estimated revenue contribution across pipeline stages.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <img src="https://marinia-portfolio-shani-01.s3.us-west-2.amazonaws.com/marketing-automation/clinic-outreach/opportunities-by-stage.png"
+                            alt="Opportunities by Stage" style="width:100%; border-radius:12px;" />
+                        <p style="margin-top:10px; font-size:13px; color:#8FA3B8;">
+                            Distribution of outreach opportunities across qualification stages.
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+            <section class="section" id="evidence">
+                <div class="section-header">
+                    <div>
+                        <h2>Execution evidence</h2>
+                        <p>
+                            These artifacts document how the outreach system was structured in HubSpot and how an
+                            individual clinic was
+                            assessed as an intake automation opportunity.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="evidence">
+                    <figure>
+                        <img src="hubspot-pipeline-overview.png"
+                            alt="HubSpot pipeline overview showing multiple dermatology outreach opportunities" />
+                        <figcaption>
+                            HubSpot pipeline overview showing structured outreach stages, close dates, owners, and
+                            projected deal value
+                            across dermatology opportunities.
+                        </figcaption>
+                    </figure>
+
+                    <figure>
+                        <img src="westchester-dermatology-ai-intake-opportunity-analysis.png"
+                            alt="Westchester Dermatology opportunity analysis inside HubSpot" />
+                        <figcaption>
+                            Individual opportunity analysis documenting clinic profile, observed workflow constraints,
+                            and recommended
+                            AI intake automation direction.
+                        </figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <div>
+                        <h2>Strategic significance</h2>
+                        <p>
+                            This project demonstrates an approach that bridges business development, workflow analysis,
+                            cloud architecture,
+                            and data strategy. Rather than treating outreach as pure sales activity, the pipeline was
+                            structured as a discovery
+                            engine for identifying automation use cases with measurable ROI.
+                        </p>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="panel">
+                        <h3>What this shows technically</h3>
+                        <ul>
+                            <li>Ability to frame business pain points as data and workflow problems</li>
+                            <li>Cloud-native thinking using AWS storage and modular system design</li>
+                            <li>Orchestration-first mindset using Airflow as an operational backbone</li>
+                            <li>Readiness to connect CRM data, automation workflows, and analytics</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>What this shows strategically</h3>
+                        <ul>
+                            <li>Executive-level ROI framing for operational modernization</li>
+                            <li>Pipeline design that supports repeatable outreach and prioritization</li>
+                            <li>Industry-specific positioning for healthcare workflow transformation</li>
+                            <li>Practical consulting mindset: diagnose, quantify, architect, and communicate</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="panel">
+                    <h2>Portfolio takeaway</h2>
+                    <p>
+                        This case study is a proof-of-capability artifact showing how a clinic outreach initiative can
+                        be elevated into a
+                        structured workflow automation opportunity. It reflects the ability to identify inefficiency,
+                        estimate business value,
+                        document technical direction, and organize evidence in a cloud-hosted portfolio.
+                    </p>
+                    <p>
+                        In a production environment, the next phase would include a deployed intake form, an
+                        orchestrated backend workflow,
+                        CRM/EHR integrations, and a Power BI dashboard for conversion and operations monitoring.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container">
+
+            <div
+                style="margin-top:40px; text-align:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:20px;">
+
+                <div style="font-size:13px; color:#9FB3C8; font-weight:500;">
+                    Prepared by Shani Sambrano
+                </div>
+
+                <div style="font-size:12px; color:#6B7C93; margin-top:6px;">
+                    Chief AI Officer (CAIO) | Fractional Chief Data Officer
+                </div>
+
+                <div style="font-size:11px; color:#6B7C93; margin-top:6px;">
+                    AI Workflow Architecture • Data Strategy • Automation Systems
+                </div>
+                <div style="margin-top:12px;">
+                    <a href="https://elevate-aisolutions.com"
+                        style="color:#23c7e8; font-size:11px; text-decoration:none;">
+                        elevate-aisolutions.com
+                    </a>
+                </div>
+
+
+            </div>
+
+        </div>
+    </footer>
+    <script>
+        function animateCounter(counter) {
+            const target = Number(counter.dataset.target);
+            const prefix = counter.dataset.prefix || "";
+            const suffix = counter.dataset.suffix || "";
+
+            let current = 0;
+            const duration = 2000;
+            const steps = 60;
+            const increment = target / steps;
+            let step = 0;
+
+            const timer = setInterval(() => {
+                step++;
+                current += increment;
+
+                if (step >= steps) {
+                    counter.textContent = `${prefix}${target}${suffix}`;
+                    clearInterval(timer);
+
+                    setTimeout(() => {
+                        animateCounter(counter);
+                    }, 1500);
+                } else {
+                    counter.textContent = `${prefix}${Math.floor(current)}${suffix}`;
+                }
+            }, duration / steps);
+        }
+
+        document.querySelectorAll('.count').forEach(counter => {
+            animateCounter(counter);
+        });
+
+        const architectureItems = document.querySelectorAll('.flow-step, .callout');
+
+        const architectureObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 140);
+                }
+            });
+        }, {
+            threshold: 0.25
+        });
+
+        architectureItems.forEach(item => {
+            architectureObserver.observe(item);
+        });
+    </script>
+</body>
+
+</html>
