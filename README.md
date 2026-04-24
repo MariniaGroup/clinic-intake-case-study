@@ -45,7 +45,7 @@ flowchart LR
     D --> E[CRM System]
     D --> F[Analytics Dashboard]
     D --> G[Notification System]
-
+```
 Key Metrics (From Case Study)
 31 qualified clinic opportunities
 $15K target engagement value per clinic
