@@ -477,7 +477,7 @@
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 </head>
 
@@ -739,8 +739,10 @@
                 <div class="grid-2">
 
                     <div class="card">
-                        <img src="https://marinia-portfolio-shani-01.s3.us-west-2.amazonaws.com/marketing-automation/clinic-outreach/pipeline-value.png"
-                            alt="Pipeline Value Over Time" style="width:100%; border-radius:12px;" />
+                        <div style="position:relative; width:100%; height:300px;">
+                            <canvas id="pipelineLineChart"></canvas>
+                        </div>
+
                         <p style="margin-top:10px; font-size:13px; color:#8FA3B8;">
                             Growth in cumulative pipeline value over a 6-month outreach cycle.
                         </p>
@@ -892,6 +894,8 @@
         </div>
     </footer>
     <script>
+        Chart.register(ChartDataLabels);
+
         function animateCounter(counter) {
             const target = Number(counter.dataset.target);
             const prefix = counter.dataset.prefix || "";
@@ -1025,7 +1029,116 @@
         }, { threshold: 0.15 });
 
         chartObserver.observe(document.getElementById('pipelineChart'));
+        const lineCtx = document.getElementById('pipelineLineChart').getContext('2d');
 
+        const lineLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+        const lineValues = [15000, 28000, 37000, 52000, 64000, 75000];
+
+        const pipelineLineChart = new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: lineLabels,
+                datasets: [{
+                    label: 'Cumulative Pipeline Value (USD)',
+                    data: [null, null, null, null, null, null],
+                    borderColor: '#23c7e8',
+                    backgroundColor: 'rgba(35, 199, 232, 0.18)',
+                    pointBackgroundColor: '#23c7e8',
+                    pointBorderColor: '#23c7e8',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    borderWidth: 3,
+                    tension: 0.35,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#c7d7e8'
+                        }
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                    datalabels: {
+                        color: '#ffffff',
+                        anchor: 'end',
+                        align: 'top',
+                        offset: 6,
+                        formatter: (value) => {
+                            if (value === null) return '';
+                            return '$' + (value / 1000) + 'K';
+                        },
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        },
+                        textStrokeColor: '#000000',
+                        textStrokeWidth: 2
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 80000,
+                        ticks: {
+                            color: '#c7d7e8',
+                            callback: value => '$' + value / 1000 + 'K'
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.08)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#c7d7e8'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        function animateLineChart(index = 0) {
+            if (index === 0) {
+                pipelineLineChart.data.datasets[0].data = [null, null, null, null, null, null];
+                pipelineLineChart.update('none');
+            }
+
+            if (index >= lineValues.length) {
+                setTimeout(() => {
+                    animateLineChart(0);
+                }, 2500);
+                return;
+            }
+
+            pipelineLineChart.data.datasets[0].data[index] = lineValues[index];
+            pipelineLineChart.update();
+
+            setTimeout(() => {
+                animateLineChart(index + 1);
+            }, 350);
+        }
+
+        let lineAnimationStarted = false;
+
+        const lineObserver = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && !lineAnimationStarted) {
+                lineAnimationStarted = true;
+                animateLineChart();
+            }
+        }, { threshold: 0.25 });
+
+        lineObserver.observe(document.getElementById('pipelineLineChart'));
     </script>
 </body>
 
