@@ -46,36 +46,48 @@ flowchart LR
     D --> F[Analytics Dashboard]
     D --> G[Notification System]
 ```
-Key Metrics (From Case Study)
-31 qualified clinic opportunities
-$15K target engagement value per clinic
-40–60% reduction in intake processing time
-10–20% increase in patient throughput
+## Key Metrics (From Case Study)
 
-Tech Stack
-AWS S3 (Storage)
-Apache Airflow (Workflow orchestration)
-HubSpot CRM
-JavaScript (Chart.js for data visualization)
-HTML/CSS (UI/UX design)
+- 31 qualified clinic opportunities  
+- $15K target engagement value per clinic  
+- 40–60% reduction in intake processing time  
+- 10–20% increase in patient throughput  
 
-Key Features
-Animated KPI counters
-Sequential bar chart animation
-Line chart growth visualization
-Scroll-triggered UI animations
-Data-driven storytelling for business stakeholders
-What This Demonstrates
+---
+
+## Tech Stack
+
+- AWS S3 (Storage)  
+- Apache Airflow (Workflow orchestration)  
+- HubSpot CRM  
+- JavaScript (Chart.js for data visualization)  
+- HTML/CSS (UI/UX design)  
+
+---
+
+## Key Features
+
+- Animated KPI counters  
+- Sequential bar chart animation  
+- Line chart growth visualization  
+- Scroll-triggered UI animations  
+- Data-driven storytelling for business stakeholders  
+
+---
+
+## What This Demonstrates
 
 This project showcases my ability to:
 
-Translate business problems into technical architectures
-Design scalable AI/data workflows
-Build executive-ready data visualizations
-Bridge operations, analytics, and engineering
+- Translate business problems into technical architectures  
+- Design scalable AI/data workflows  
+- Build executive-ready data visualizations  
+- Bridge operations, analytics, and engineering  
 
-Author
+---
 
-Shani Sambrano
-AI/ML Data Architect | Fractional CDO
+## Author
+
+Shani Sambrano  
+AI/ML Data Architect | Fractional CDO  
 Marinia Group, LLC
